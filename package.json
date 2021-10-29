@@ -1,0 +1,31 @@
+{
+  "name": "solidity-exchange-smart-contract",
+  "version": "1.0.0",
+  "description": "",
+  "private": "true",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/jasielmacedo/solidity-exchange-smart-contract.git"
+  },
+  "keywords": [
+    "solidity",
+    "smart-contracts",
+    "ethereum",
+    "exchange",
+    "erc-20",
+    "erc-721",
+    "erc-1155"
+  ],
+  "author": "jasiel macedo <jasielmacedo@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jasielmacedo/solidity-exchange-smart-contract/issues"
+  },
+  "homepage": "https://github.com/jasielmacedo/solidity-exchange-smart-contract#readme",
+  "devDependencies": {
+    "truffle": "^5.4.17"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.3.2"
+  }
+}
