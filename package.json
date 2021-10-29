@@ -7,6 +7,9 @@
     "type": "git",
     "url": "git+ssh://git@github.com/jasielmacedo/solidity-exchange-smart-contract.git"
   },
+  "scripts": {
+    "test": "truffle test"
+  },
   "keywords": [
     "solidity",
     "smart-contracts",
@@ -23,6 +26,8 @@
   },
   "homepage": "https://github.com/jasielmacedo/solidity-exchange-smart-contract#readme",
   "devDependencies": {
+    "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.1",
     "truffle": "^5.4.17"
   },
   "dependencies": {
