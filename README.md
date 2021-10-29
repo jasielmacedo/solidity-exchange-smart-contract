@@ -1,5 +1,7 @@
 # solidity-exchange-smart-contract
 
+This project is an ideia of creating an exchange using smart contracts
+
 ## Setup
 
 [Instructions to install Truffle Ganache](https://www.trufflesuite.com/ganache)
