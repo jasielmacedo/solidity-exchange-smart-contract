@@ -1,6 +1,6 @@
 # solidity-exchange-smart-contract
 
-This project is an ideia of creating an exchange using smart contracts
+I've create this project to explore the possibility of creating smart contracts to do token exchange
 
 ## Setup
 
@@ -45,3 +45,13 @@ Testing contracts:
 ```
 npm test
 ```
+
+## Contract deploy address
+
+### Game Token
+
+Mumbai testnet: [0x16478bd92e713a5599898c2c3b4713c47c5d39d1](https://mumbai.polygonscan.com/token/0x16478bd92e713a5599898c2c3b4713c47c5d39d1)
+
+### Game Token Pool Exchange
+
+Mumbai testnet: [0xeA9E864f926b3a8bc17D1957D87A9CE7C633939f](https://mumbai.polygonscan.com/address/0xea9e864f926b3a8bc17d1957d87a9ce7c633939f)
