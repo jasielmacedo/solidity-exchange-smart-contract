@@ -64,11 +64,15 @@ contract('GameTokenPoolExchange', ([deployer, investor]) => {
 
       await pool.buyTokens({
         from: investor,
-        value: tokens('0.01'),
+        value: tokens('1'),
       });
 
       const purchasedToken = (await token.balanceOf(investor)).toString();
-      assert.equal(purchasedToken, tokens('11').toString());
+      assert.equal(purchasedToken, tokens('1001').toString());
+    });
+
+    it('should withdraw to the owner', async () => {
+      await pool.withdraw();
     });
   });
 });
