@@ -31,6 +31,8 @@
     "truffle": "^5.4.17"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.3.2"
+    "@openzeppelin/contracts": "^4.3.2",
+    "bignumber.js": "^9.0.1",
+    "web3": "^1.6.0"
   }
 }

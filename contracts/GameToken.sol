@@ -24,19 +24,17 @@ contract GameToken is ERC20, ERC20Burnable, Pausable, Ownable {
     _unpause();
   }
 
-  function rewardPlayer(address _to, uint256 _amount)
+  function rewardPlayer(address _to, uint256 _tokenAmount)
     public
     onlyOwner
     whenNotPaused
   {
-    // convert the amount
-    uint256 tokenAmount = _amount * 10**18;
     // the owner must have the correct amount
-    require(balanceOf(msg.sender) <= tokenAmount);
+    require(balanceOf(msg.sender) <= _tokenAmount);
     // transfer the amount to the player
-    transferFrom(msg.sender, _to, tokenAmount);
+    transferFrom(msg.sender, _to, _tokenAmount);
     // emit the event
-    emit PlayerRewarded(_to, tokenAmount);
+    emit PlayerRewarded(_to, _tokenAmount);
   }
 
   // creates an override version to avoid transfering when paused
