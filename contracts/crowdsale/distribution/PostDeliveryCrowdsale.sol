@@ -15,23 +15,18 @@ abstract contract PostDeliveryCrowdsale is TimedCrowdsale {
     using SafeMath for uint256;
 
     mapping(address => uint256) private _balances;
-    __unstable__TokenVault private _vault;
-
-    constructor() {
-        _vault = new __unstable__TokenVault();
-    }
 
     /**
      * @dev Withdraw tokens only after crowdsale ends.
-     * @param beneficiary Whose tokens will be withdrawn.
      */
-    function withdrawTokens(address beneficiary) public {
+    function withdrawTokens() public virtual {
+        address beneficiary = _msgSender();
         require(hasClosed(), "PostDeliveryCrowdsale: not closed");
         uint256 amount = _balances[beneficiary];
         require(amount > 0, "PostDeliveryCrowdsale: beneficiary is not due any tokens");
 
         _balances[beneficiary] = 0;
-        _vault.transfer(token(), beneficiary, amount);
+        token().transfer(beneficiary, amount);
     }
 
     /**
@@ -50,18 +45,6 @@ abstract contract PostDeliveryCrowdsale is TimedCrowdsale {
      */
     function _processPurchase(address beneficiary, uint256 tokenAmount) internal override {
         _balances[beneficiary] = _balances[beneficiary].add(tokenAmount);
-        _deliverTokens(address(_vault), tokenAmount);
-    }
-}
-
-/**
- * @title __unstable__TokenVault
- * @dev Similar to an Escrow for tokens, this contract allows its primary account to spend its tokens as it sees fit.
- * This contract is an internal helper for PostDeliveryCrowdsale, and should not be used outside of this context.
- */
-// solhint-disable-next-line contract-name-camelcase
-contract __unstable__TokenVault is Secondary {
-    function transfer(IERC20 token, address to, uint256 amount) public onlyPrimary {
-        token.transfer(to, amount);
+        _tokenBalance = _tokenBalance.sub(tokenAmount);
     }
 }

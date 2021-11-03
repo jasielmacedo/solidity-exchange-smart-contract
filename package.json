@@ -8,7 +8,9 @@
     "url": "git+ssh://git@github.com/jasielmacedo/solidity-exchange-smart-contract.git"
   },
   "scripts": {
-    "test": "truffle test"
+    "test": "truffle test",
+    "deploy": "truffle migrate --reset",
+    "compile": "truffle compile"
   },
   "keywords": [
     "solidity",
@@ -33,6 +35,7 @@
   "dependencies": {
     "@openzeppelin/contracts": "^4.3.2",
     "bignumber.js": "^9.0.1",
+    "moment": "^2.29.1",
     "web3": "^1.6.0"
   }
 }

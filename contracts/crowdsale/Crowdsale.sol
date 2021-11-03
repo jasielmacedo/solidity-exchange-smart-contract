@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
  * @title Crowdsale
@@ -19,7 +20,7 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
  * the methods to add functionality. Consider using 'super' where appropriate to concatenate
  * behavior.
  */
-abstract contract Crowdsale is Context, ReentrancyGuard {
+abstract contract Crowdsale is Context, ReentrancyGuard, Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -37,6 +38,19 @@ abstract contract Crowdsale is Context, ReentrancyGuard {
 
     // Amount of wei raised
     uint256 private _weiRaised;
+
+    /**
+     * @dev Reverts if not in crowdsale time range.
+     */
+    modifier onlyWithBalance {
+        require(_tokenBalance > 0, "Not enough token to sell");
+        _;
+    }
+
+    // How many tokens this crowdsale has to distribute.
+    // will be used to track and distribute postsale
+    // to avoid selling the same token twice
+    uint256 internal _tokenBalance;
 
     /**
      * Event for token purchase logging
@@ -63,6 +77,8 @@ abstract contract Crowdsale is Context, ReentrancyGuard {
         _rate = rate_;
         _wallet = wallet_;
         _token = token_;
+
+        _tokenBalance = 0;
     }
 
     /**
@@ -101,15 +117,22 @@ abstract contract Crowdsale is Context, ReentrancyGuard {
     /**
      * @return the number of token units a buyer gets per wei.
      */
-    function rate() public view returns (uint256) {
+    function rate() public virtual view returns (uint256) {
         return _rate;
     }
 
     /**
      * @return the amount of wei raised.
      */
-    function weiRaised() public view returns (uint256) {
+    function weiRaised() public virtual view returns (uint256) {
         return _weiRaised;
+    }
+
+    /**
+     * @return the token balance available to buy.
+     */
+    function tokenBalance() public virtual view returns (uint256) {
+        return _tokenBalance;
     }
 
     /**
@@ -118,12 +141,14 @@ abstract contract Crowdsale is Context, ReentrancyGuard {
      * another `nonReentrant` function.
      * @param beneficiary Recipient of the token purchase
      */
-    function buyTokens(address beneficiary) public nonReentrant payable {
+    function buyTokens(address beneficiary) public nonReentrant onlyWithBalance payable {
         uint256 weiAmount = msg.value;
         _preValidatePurchase(beneficiary, weiAmount);
 
         // calculate token amount to be created
         uint256 tokens = _getTokenAmount(weiAmount);
+
+        require(tokenBalance() >= tokens, 'There are not enough tokens to buy');
 
         // update state
         _weiRaised = _weiRaised.add(weiAmount);
@@ -138,11 +163,16 @@ abstract contract Crowdsale is Context, ReentrancyGuard {
     }
 
     /**
+     * @dev Set the balance for this crowdsale. Important to be called after sending tokens to this contract
+     */
+    function _setTokenBalance() internal {
+      require(_tokenBalance == 0, 'Change token balance is only allowed when balance is equal zero');
+      _tokenBalance = token().balanceOf(address(this));
+    }
+
+    /**
      * @dev Validation of an incoming purchase. Use require statements to revert state when conditions are not met.
      * Use `super` in contracts that inherit from Crowdsale to extend their validations.
-     * Example from CappedCrowdsale.sol's _preValidatePurchase method:
-     *     super._preValidatePurchase(beneficiary, weiAmount);
-     *     require(weiRaised().add(weiAmount) <= cap);
      * @param beneficiary Address performing the token purchase
      * @param weiAmount Value in wei involved in the purchase
      */
@@ -168,7 +198,8 @@ abstract contract Crowdsale is Context, ReentrancyGuard {
      * @param beneficiary Address performing the token purchase
      * @param tokenAmount Number of tokens to be emitted
      */
-    function _deliverTokens(address beneficiary, uint256 tokenAmount) internal {
+    function _deliverTokens(address beneficiary, uint256 tokenAmount) internal virtual {
+        _tokenBalance = _tokenBalance.sub(tokenAmount);
         _token.safeTransfer(beneficiary, tokenAmount);
     }
 
@@ -178,7 +209,7 @@ abstract contract Crowdsale is Context, ReentrancyGuard {
      * @param beneficiary Address receiving the tokens
      * @param tokenAmount Number of tokens to be purchased
      */
-    function _processPurchase(address beneficiary, uint256 tokenAmount) internal {
+    function _processPurchase(address beneficiary, uint256 tokenAmount) internal virtual {
         _deliverTokens(beneficiary, tokenAmount);
     }
 
@@ -188,7 +219,7 @@ abstract contract Crowdsale is Context, ReentrancyGuard {
      * @param beneficiary Address receiving the tokens
      * @param weiAmount Value in wei involved in the purchase
      */
-    function _updatePurchasingState(address beneficiary, uint256 weiAmount) internal {
+    function _updatePurchasingState(address beneficiary, uint256 weiAmount) internal virtual {
         // solhint-disable-previous-line no-empty-blocks
     }
 

@@ -11,8 +11,8 @@ import "../Crowdsale.sol";
 abstract contract TimedCrowdsale is Crowdsale {
     using SafeMath for uint256;
 
-    uint256 private _openingTime;
-    uint256 private _closingTime;
+    uint256 internal _openingTime;
+    uint256 internal _closingTime;
 
     /**
      * Event for crowdsale extending

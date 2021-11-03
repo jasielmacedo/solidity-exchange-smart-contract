@@ -1,18 +1,18 @@
 const { assert } = require('chai');
 
-const GameToken = artifacts.require('./GameToken.sol');
+const GamaxToken = artifacts.require('./GamaxToken.sol');
 
 require('chai').use(require('chai-as-promised')).should();
 
-contract('GameToken', ([deployer]) => {
+contract('GamaxToken', ([deployer]) => {
   let token;
 
   before(async () => {
-    token = await GameToken.deployed();
+    token = await GamaxToken.deployed();
   });
 
   describe('deployment', async () => {
-    it('should deployed successfully', async () => {
+    it('should have deployed successfully', async () => {
       const { address } = token;
       assert.notEqual(address, 0x0);
       assert.notEqual(address, '');
@@ -22,7 +22,7 @@ contract('GameToken', ([deployer]) => {
 
     it('deployer should have balance', async () => {
       const deployerBalance = await token.balanceOf(deployer);
-      assert.equal(deployerBalance.toString(), '1000000000000000000000000000');
+      assert.equal(deployerBalance.toString(), '10000000000000000000000000000');
     });
   });
 });

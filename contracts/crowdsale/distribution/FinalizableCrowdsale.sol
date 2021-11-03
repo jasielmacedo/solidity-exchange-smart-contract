@@ -2,14 +2,14 @@
 pragma solidity ^0.8.2;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "../validation/TimedCrowdsale.sol";
+import "./PostDeliveryCrowdsale.sol";
 
 /**
  * @title FinalizableCrowdsale
  * @dev Extension of TimedCrowdsale with a one-off finalization action, where one
  * can do extra work after finishing.
  */
-abstract contract FinalizableCrowdsale is TimedCrowdsale {
+abstract contract FinalizableCrowdsale is PostDeliveryCrowdsale {
     using SafeMath for uint256;
 
     bool private _finalized;
@@ -23,7 +23,7 @@ abstract contract FinalizableCrowdsale is TimedCrowdsale {
     /**
      * @return true if the crowdsale is finalized, false otherwise.
      */
-    function finalized() public view returns (bool) {
+    function finalized() public virtual view returns (bool) {
         return _finalized;
     }
 
@@ -31,7 +31,7 @@ abstract contract FinalizableCrowdsale is TimedCrowdsale {
      * @dev Must be called after crowdsale ends, to do some extra finalization
      * work. Calls the contract's finalization function.
      */
-    function finalize() public {
+    function finalize() public virtual {
         require(!_finalized, "FinalizableCrowdsale: already finalized");
         require(hasClosed(), "FinalizableCrowdsale: not closed");
 
@@ -46,7 +46,7 @@ abstract contract FinalizableCrowdsale is TimedCrowdsale {
      * should call super._finalization() to ensure the chain of finalization is
      * executed entirely.
      */
-    function _finalization() internal {
+    function _finalization() internal virtual {
         // solhint-disable-previous-line no-empty-blocks
     }
 }

@@ -33,7 +33,7 @@ abstract contract IncreasingPriceCrowdsale is TimedCrowdsale {
      * The base rate function is overridden to revert, since this crowdsale doesn't use it, and
      * all calls to it are a mistake.
      */
-    function rate() public override view returns (uint256) {
+    function rate() public pure override returns (uint256) {
         revert("IncreasingPriceCrowdsale: rate() called");
     }
 
